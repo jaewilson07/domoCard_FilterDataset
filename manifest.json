@@ -1,0 +1,31 @@
+{
+  "short_name": "React App",
+  "homepage": "https://jaewilson07.github.io",
+  "name": "date_picker",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+
+  "version": "1.0.0",
+  "size": {
+    "width": 1,
+    "height": 1
+  },
+  "mapping": [
+    {
+      "dataSetId": "499778c6-b30d-4123-96e4-bea9c60d2d96",
+      "alias": "dateList",
+      "fields": []
+    }
+  ],
+  "proxyId": "5d778a29-9940-4201-a20e-672a28eb2758",
+  "id": "846865e7-f961-4012-aa26-17fe201fdf17"
+}
