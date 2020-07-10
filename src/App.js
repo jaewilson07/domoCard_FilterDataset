@@ -30,6 +30,10 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 class App extends Component {
+  constructor() {
+    super();
+    console.log('constructing');
+  }
   componentDidMount() {
     this.props.getStores();
   }

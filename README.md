@@ -1,4 +1,5 @@
-<<<<<<< HEAD
+this app requires a proxy, so update the manifest ID and ProxyID after deploying to your instance of Domo.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
@@ -67,6 +68,3 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
-=======
-# domoCard_FilterDataset
->>>>>>> 1091bf65d5efe38f4383fd0a8bfa56b98dfc84fb
