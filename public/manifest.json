@@ -19,6 +19,8 @@
     "width": 1,
     "height": 1
   },
+  "collections": [{ "name": "app_state" }],
+
   "mapping": [
     {
       "dataSetId": "499778c6-b30d-4123-96e4-bea9c60d2d96",

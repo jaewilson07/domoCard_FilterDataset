@@ -2,52 +2,72 @@ import {
   CHANGE_DATEPICKER,
   SET_STORES,
   HAS_ERROR,
-  API,
-  API_START,
-  API_END,
-  API_ERROR,
   GET_STORES,
+  API,
+  COLLECTION_NAME,
+  POST_DATE,
 } from './constant';
 
-export const apiStart = (label) => ({
-  type: API_START,
-  payload: label,
-});
+import { Domo } from '../utilities/domo';
 
-export const apiEnd = (label) => ({
-  type: API_END,
-  payload: label,
-});
-
-export const apiError = (error) => ({
-  type: API_ERROR,
-  payload: error,
-});
-
-const apiAction = ({ url = '', body = '', onSuccess, onFailure }) => {
+const apiAction = ({
+  url = '',
+  body = '',
+  method = 'POST',
+  onSuccess,
+  onFailure,
+}) => {
   return {
     type: API,
     payload: {
       url,
       body,
+      method,
       onSuccess,
       onFailure,
     },
   };
 };
 
-export const getStores = () => {
-  return apiAction({
-    url: '/sql/v1/dateList',
-    body: 'SELECT * FROM dateList limit 100',
-    onSuccess: setStores,
-    onFailure: failStores,
-    label: GET_STORES,
-  });
+export const domoSql = {
+  handleGetStores: () => {
+    console.log('getting stores');
+    return apiAction({
+      url: '/sql/v1/dateList',
+      method: 'POST',
+      body: 'SELECT * FROM dateList limit 100',
+      onSuccess: setStores,
+      onFailure: failStores,
+      label: GET_STORES,
+    });
+  },
+};
+
+export const appdb = {
+  handlePostDate: (date) => {
+    console.log('handling post date');
+    const document = {
+      content: {
+        selectedDate: date,
+        userId: Domo.env.userId,
+      },
+    };
+
+    return apiAction({
+      url: `/domo/datastores/v1/collections/${COLLECTION_NAME}/documents/`,
+      method: 'POST',
+      body: JSON.stringify(document),
+      onSuccess: () => {},
+      onFailure: () => {},
+      label: POST_DATE,
+    });
+  },
 };
 
 export const setStores = (storeData) => {
   const colNames = storeData.columns;
+
+  //get the payload
   const payload = storeData.rows.map((row) => {
     const rowClean = row.reduce((accum, data, index) => {
       accum[colNames[index]] = data;
@@ -69,10 +89,13 @@ export const failStores = (error) => {
     payload: { columns: ['StoreID'], rows: [] },
   };
 };
-export const setDatePicker = (date) => ({
-  type: CHANGE_DATEPICKER,
-  payload: date,
-});
+
+export const onDateChange = (date) => {
+  return {
+    type: CHANGE_DATEPICKER,
+    payload: date,
+  };
+};
 
 export const catchError = (error, info) => ({
   type: HAS_ERROR,

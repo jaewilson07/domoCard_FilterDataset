@@ -7,10 +7,8 @@ import {
   HAS_ERROR,
 } from './constant';
 
-const today = new Date();
-
 const dateInitial = {
-  selectedDate: today,
+  selectedDate: new Date(),
 };
 
 export const dateState = (state = dateInitial, action = {}) => {

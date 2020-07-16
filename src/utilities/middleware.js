@@ -1,29 +1,35 @@
 import { API } from '../components/constant';
 import { Domo } from './domo';
-import { apiStart, apiEnd, apiError } from '../components/action';
+import { apiStart, apiEnd, apiError } from './api/api';
 
 const apiMiddleware = ({ dispatch }) => (next) => async (action) => {
   next(action);
 
   if (action.type !== API) return;
 
-  const { url, body, onSuccess, onFailure, label } = action.payload;
+  const { url, body, onSuccess, method, onFailure, label } = action.payload;
 
-  // const dataOrParams = ['GET', 'DELETE'].includes(method) ? 'params' : 'data';
   if (label) {
     dispatch(apiStart(label));
   }
 
-  const data = await Domo.post(url, body, {
-    contentType: 'text/plain',
-  });
-  console.log('my middleware', data);
+  const data = async () => {
+    switch (method) {
+      case 'POST': {
+        return await Domo.post(url, body, {
+          contentType: 'text/plain',
+        });
+      }
+      default:
+        return [];
+    }
+  };
 
   try {
     dispatch(onSuccess(data));
   } catch (error) {
-    dispatch(onFailure(error));
-    dispatch(apiError(error));
+    dispatch(onFailure(error.message));
+    dispatch(apiError(error.message));
   } finally {
     if (label) {
       dispatch(apiEnd(label));

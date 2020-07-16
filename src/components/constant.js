@@ -10,6 +10,10 @@ export const API_ERROR = 'API_ERROR';
 export const SET_STORES = 'SET_STORES';
 export const GET_STORES = 'GET_STORES';
 
+export const COLLECTION_NAME = 'app_state';
+export const SET_DATE = 'SET_DATE';
+export const POST_DATE = 'POST_DATE';
+
 //export const FETCH_STORES = 'FETCH_STORES';
 // export const DOMO_PENDING = 'DOMO_PENDING';
 // export const DOMO_SUCCESS = 'DOMO_SUCCESS';

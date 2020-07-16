@@ -5,7 +5,7 @@ import DatePicker from './components/DatePicker';
 import { FilterRows } from './components/appFunctions';
 import { ConstructMessage } from './components/Message';
 
-import { setDatePicker, catchError, getStores } from './components/action';
+import { onDateChange, catchError, domoSql, appdb } from './components/action';
 
 import './App.css';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -23,24 +23,27 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onDateChange: (date) => dispatch(setDatePicker(date)),
+    onDateChange: (date) => dispatch(onDateChange(date)),
     onError: (error, info) => dispatch(catchError(error, info)),
-    getStores: () => dispatch(getStores()),
+    handleGetStores: () => dispatch(domoSql.handleGetStores()),
+    handlePostDate: (date) => dispatch(appdb.handlePostDate(date)),
   };
 };
 
 class App extends Component {
-  constructor() {
-    super();
-    console.log('constructing');
-  }
   componentDidMount() {
-    this.props.getStores();
+    this.props.handleGetStores();
+  }
+
+  componentDidUpdate(prevProps) {
+    // Typical usage (don't forget to compare props):
+    console.log('didupdate', this.props);
+    if (this.props.selectedDate !== prevProps.selectedDate) {
+      this.prop.handlePostDate(this.props.SelectedDate);
+    }
   }
 
   render() {
-    console.log('render props', this.props);
-
     const { onDateChange, selectedDate, storeData, errorState } = this.props;
 
     if (storeData.length > 0) {
@@ -50,7 +53,7 @@ class App extends Component {
         'Open',
         'Closed'
       );
-      const message = ConstructMessage(filteredData, 'RowID');
+      ConstructMessage(filteredData, 'RowID');
     }
 
     return (
@@ -59,10 +62,7 @@ class App extends Component {
           isError={errorState.isError}
           handleError={errorState.onError}
         >
-          <DatePicker
-            handleDateChange={onDateChange}
-            selectedDate={selectedDate}
-          />
+          <DatePicker onDateChange={onDateChange} selectedDate={selectedDate} />
         </ErrorBoundary>
       </div>
     );

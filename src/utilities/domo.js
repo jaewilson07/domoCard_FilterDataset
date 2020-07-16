@@ -177,13 +177,6 @@ Domo.filterContainer = function (column, operator, values, dataType) {
 
 Domo.env = getQueryParams();
 
-Domo.__util = {
-  isVerifiedOrigin,
-  getQueryParams,
-  setFormatHeaders,
-  isSuccess,
-};
-
 function isSuccess(status) {
   return status >= 200 && status < 300;
 }
