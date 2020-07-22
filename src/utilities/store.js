@@ -4,16 +4,18 @@ import { createLogger } from 'redux-logger';
 import apiMiddleware from './middleware';
 
 import {
+  documentState,
+  userState,
   dateState,
-  // requestDomoState,
   storeState,
   errorState,
 } from '../components/reduce';
 
 const logger = createLogger();
 const rootReducer = combineReducers({
+  documentState,
+  userState,
   dateState,
-  //requestDomoState,
   storeState,
   errorState,
 });

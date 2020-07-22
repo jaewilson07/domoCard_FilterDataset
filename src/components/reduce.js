@@ -1,11 +1,58 @@
 import {
-  CHANGE_DATEPICKER,
+  UPDATE_USER,
+  UPDATE_DATE,
   GET_STORES,
   SET_STORES,
+  GET_STATE_PENDING,
+  GET_STATE_SUCCESS,
+  GET_STATE_ERROR,
+  GET_STATE_END,
   API_START,
   API_END,
   HAS_ERROR,
 } from './constant';
+
+import domo from '../utilities/domo';
+
+// let stateDocumentId = '';
+const documentInitial = {
+  isPending: false,
+  documentStateId: '',
+  error: '',
+};
+
+export const documentState = (state = documentInitial, action = {}) => {
+  switch (action.type) {
+    case GET_STATE_PENDING:
+      return Object.assign({}, state, { isPending: true });
+    case GET_STATE_SUCCESS:
+    case GET_STATE_END:
+      return Object.assign({}, state, {
+        documentStateId: action.payload,
+        isPending: false,
+      });
+    case GET_STATE_ERROR:
+      return Object.assign({}, state, {
+        error: action.payload,
+        isPending: false,
+      });
+    default:
+      return state;
+  }
+};
+
+export const userInitial = {
+  userId: domo.env.userId ? domo.env.userId : 'defaultUser',
+};
+
+export const userState = (state = userInitial, action = {}) => {
+  switch (action.type) {
+    case UPDATE_USER:
+      return Object.assign({}, state, { userId: action.payload });
+    default:
+      return state;
+  }
+};
 
 const dateInitial = {
   selectedDate: new Date(),
@@ -13,7 +60,7 @@ const dateInitial = {
 
 export const dateState = (state = dateInitial, action = {}) => {
   switch (action.type) {
-    case CHANGE_DATEPICKER:
+    case UPDATE_DATE:
       return Object.assign({}, state, { selectedDate: action.payload });
     default:
       return state;
@@ -60,28 +107,3 @@ export const errorState = (state = initialError, action = {}) => {
       return state;
   }
 };
-
-// const initialDomoRequest = {
-//   isPending: false,
-//   data: [],
-//   error: '',
-// };
-// export const requestDomoState = (state = initialDomoRequest, action = {}) => {
-//   switch (action.type) {
-//     case DOMO_PENDING:
-//       return Object.assign({}, state, { isPending: true });
-
-//     case DOMO_SUCCESS:
-//       return Object.assign({}, state, {
-//         data: action.payload,
-//         isPending: false,
-//       });
-//     case DOMO_ERROR:
-//       return Object.assign({}, state, {
-//         error: action.payload,
-//         isPending: false,
-//       });
-//     default:
-//       return state;
-//   }
-// };

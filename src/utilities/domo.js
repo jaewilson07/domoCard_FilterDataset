@@ -1,18 +1,20 @@
-export function Domo() {}
+function domo() {}
 
-Domo.post = function (url, body, options) {
+export default domo;
+
+domo.post = function (url, body, options) {
   return domoHttp('POST', url, options, true, body);
 };
 
-Domo.put = function (url, body, options) {
+domo.put = function (url, body, options) {
   return domoHttp('PUT', url, options, true, body);
 };
 
-Domo.get = function (url, options) {
+domo.get = function (url, options) {
   return domoHttp('GET', url, options);
 };
 
-Domo.delete = function (url, options) {
+domo.delete = function (url, options) {
   return domoHttp('DELETE', url, options);
 };
 
@@ -86,10 +88,10 @@ function domoHttp(method, url, options, async, body) {
   });
 }
 
-Domo.getAll = function (urls, options) {
+domo.getAll = function (urls, options) {
   return Promise.all(
     urls.map(function (url) {
-      return Domo.get(url, options);
+      return domo.get(url, options);
     })
   );
 };
@@ -97,7 +99,7 @@ Domo.getAll = function (urls, options) {
 /**
  * Let the domoapp optionally handle its own data updates.
  */
-Domo.onDataUpdate = function (cb) {
+domo.onDataUpdate = function (cb) {
   window.addEventListener('message', function (event) {
     if (!isVerifiedOrigin(event.origin)) return;
 
@@ -121,7 +123,7 @@ Domo.onDataUpdate = function (cb) {
         cb(alias);
       } catch (err) {
         var info =
-          'There was an error in Domo.onDataUpdate! It may be that our event listener caught ' +
+          'There was an error in domo.onDataUpdate! It may be that our event listener caught ' +
           'a message from another source and tried to parse it, so your update still may have worked. ' +
           'If you would like more info, here is the error: \n';
         console.warn(info, err);
@@ -133,7 +135,7 @@ Domo.onDataUpdate = function (cb) {
 /**
  * Request a navigation change
  */
-Domo.navigate = function (url, isNewWindow) {
+domo.navigate = function (url, isNewWindow) {
   var message = JSON.stringify({
     event: 'navigate',
     url: url,
@@ -148,7 +150,7 @@ Domo.navigate = function (url, isNewWindow) {
  * @param {String} operator
  * @param {Array} values
  */
-Domo.filterContainer = function (column, operator, values, dataType) {
+domo.filterContainer = function (column, operator, values, dataType) {
   var userAgent = window.navigator.userAgent.toLowerCase(),
     safari = /safari/.test(userAgent),
     ios = /iphone|ipod|ipad/.test(userAgent);
@@ -175,7 +177,14 @@ Domo.filterContainer = function (column, operator, values, dataType) {
   }
 };
 
-Domo.env = getQueryParams();
+domo.env = getQueryParams();
+
+domo.__util = {
+  isVerifiedOrigin,
+  getQueryParams,
+  setFormatHeaders,
+  isSuccess,
+};
 
 function isSuccess(status) {
   return status >= 200 && status < 300;

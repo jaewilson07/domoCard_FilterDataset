@@ -19,8 +19,18 @@
     "width": 1,
     "height": 1
   },
-  "collections": [{ "name": "app_state" }],
-
+  "collections": [
+    {
+      "name": "app_state",
+      "schema": {
+        "columns": [
+          { "name": "userId", "type": "STRING" },
+          { "name": "selectedDate", "type": "DATE" }
+        ]
+      },
+      "syncEnabled": true
+    }
+  ],
   "mapping": [
     {
       "dataSetId": "499778c6-b30d-4123-96e4-bea9c60d2d96",

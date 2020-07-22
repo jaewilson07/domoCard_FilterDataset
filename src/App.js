@@ -2,17 +2,32 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import DatePicker from './components/DatePicker';
-import { FilterRows } from './components/appFunctions';
-import { ConstructMessage } from './components/Message';
+import {
+  filterRows,
+  writeStateDocument,
+  postMessage,
+} from './components/appFunctions';
 
-import { onDateChange, catchError, domoSql, appdb } from './components/action';
+import ErrorBoundary from './components/ErrorBoundary';
+
+import {
+  catchError,
+  domoSql,
+  onDateChange,
+  getStateDocument,
+} from './components/action';
+
+import { COLLECTION } from './components/constant';
 
 import './App.css';
-import ErrorBoundary from './components/ErrorBoundary';
 
 const mapStateToProps = (state) => {
   return {
+    docState: state.documentState,
     selectedDate: state.dateState.selectedDate,
+    documentStateId: state.documentState.documentStateId,
+    userId: state.userState.userId,
+
     storeData: state.storeState.storeData,
     errorState: {
       isError: state.errorState.isError,
@@ -25,36 +40,47 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onDateChange: (date) => dispatch(onDateChange(date)),
     onError: (error, info) => dispatch(catchError(error, info)),
-    handleGetStores: () => dispatch(domoSql.handleGetStores()),
-    handlePostDate: (date) => dispatch(appdb.handlePostDate(date)),
+    getStores: () => dispatch(domoSql.getStores()),
+    getStateDocument: (userId, date) =>
+      dispatch(getStateDocument(userId, date)),
   };
 };
 
 class App extends Component {
   componentDidMount() {
-    this.props.handleGetStores();
+    const { userId, selectedDate, getStateDocument, getStores } = this.props;
+
+    //get the state document Id
+    getStateDocument(userId, selectedDate);
+    getStores();
+    console.log('component did mount', this.props);
   }
 
   componentDidUpdate(prevProps) {
-    // Typical usage (don't forget to compare props):
-    console.log('didupdate', this.props);
-    if (this.props.selectedDate !== prevProps.selectedDate) {
-      this.prop.handlePostDate(this.props.SelectedDate);
+    const { selectedDate, userId, storeData, documentStateId } = this.props;
+
+    if (selectedDate !== prevProps.selectedDate) {
+      writeStateDocument(
+        selectedDate,
+        userId,
+        COLLECTION.UPDATE_TYPE.PUT,
+        documentStateId
+      );
+
+      if (storeData.length > 0) {
+        const filteredData = filterRows(
+          storeData,
+          selectedDate,
+          'Open',
+          'Closed'
+        );
+        postMessage(filteredData, 'RowID');
+      }
     }
   }
 
   render() {
-    const { onDateChange, selectedDate, storeData, errorState } = this.props;
-
-    if (storeData.length > 0) {
-      const filteredData = FilterRows(
-        storeData,
-        selectedDate,
-        'Open',
-        'Closed'
-      );
-      ConstructMessage(filteredData, 'RowID');
-    }
+    const { selectedDate, errorState, onDateChange } = this.props;
 
     return (
       <div className="App">
@@ -62,7 +88,7 @@ class App extends Component {
           isError={errorState.isError}
           handleError={errorState.onError}
         >
-          <DatePicker onDateChange={onDateChange} selectedDate={selectedDate} />
+          <DatePicker selectedDate={selectedDate} onDateChange={onDateChange} />
         </ErrorBoundary>
       </div>
     );
